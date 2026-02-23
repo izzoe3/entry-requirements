@@ -500,8 +500,61 @@ body {
 
 <!-- ── SCREENS ───────────────────────────────────────────────── -->
 
+<!-- SETUP -->
+<div id="screen-setup" class="screen">
+  <div style="display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 60px); padding:24px;">
+    <div style="background:#fff; border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); padding:48px 40px; max-width:500px; width:100%;">
+
+      <div style="width:56px;height:56px;background:#eff4ff;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="3" stroke="#3b6fff" stroke-width="1.8"/>
+          <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#3b6fff" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div style="font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px;">First-time Setup</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:32px;">
+        Connect this app to your Google Sheet. You only need to do this once — settings are saved in your browser.
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">
+          Spreadsheet ID
+        </label>
+        <input type="text" id="cfg-sheet-id"
+          placeholder="Found in your Sheet URL: /spreadsheets/d/THIS_PART/edit"
+          style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);outline:none;" />
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">
+          Open your Google Sheet → look at the URL bar → copy the long ID between <code>/d/</code> and <code>/edit</code>
+        </div>
+      </div>
+
+      <div style="margin-bottom:28px;">
+        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">
+          Google OAuth Client ID
+        </label>
+        <input type="text" id="cfg-client-id"
+          placeholder="xxxxxxxxxx.apps.googleusercontent.com"
+          style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);outline:none;" />
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">
+          From Google Cloud Console → APIs &amp; Services → Credentials → your OAuth 2.0 Client ID
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveConfig()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Save &amp; Continue to Sign In
+      </button>
+
+      <div style="font-size:12px;color:var(--muted);margin-top:16px;text-align:center;line-height:1.5;">
+        Need help? Refer to the README file for step-by-step instructions.
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN -->
-<div id="screen-login" class="screen active">
+<div id="screen-login" class="screen">
   <div class="login-card">
     <div class="login-icon">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -523,6 +576,9 @@ body {
       Sign in with Google
     </button>
     <div class="login-note">Only pre-approved university staff can access this tool. Contact your administrator if you need access.</div>
+    <div style="margin-top:14px;">
+      <button onclick="showScreen('screen-setup')" style="background:none;border:none;font-family:'Sora',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;">⚙ Change connection settings</button>
+    </div>
   </div>
 </div>
 
@@ -541,19 +597,6 @@ body {
 <!-- MAIN APP -->
 <div id="screen-app" class="screen">
   <div class="main">
-
-    <!-- Config (shown only when not yet configured) -->
-    <div id="config-section" class="config-section hidden">
-      <div class="config-title">⚙ First-time setup</div>
-      <label>Google Sheets Spreadsheet ID</label>
-      <input type="text" id="cfg-sheet-id" placeholder="Found in your Sheet's URL: /spreadsheets/d/THIS_PART/edit" />
-      <label>Google OAuth Client ID</label>
-      <input type="text" id="cfg-client-id" placeholder="xxxxxx.apps.googleusercontent.com" />
-      <div class="config-hint">From Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client ID</div>
-      <div style="display:flex; gap:10px;">
-        <button class="btn btn-primary btn-sm" onclick="saveConfig()">Save & Continue</button>
-      </div>
-    </div>
 
     <!-- Toast -->
     <div id="toast" class="toast hidden"></div>
@@ -685,12 +728,14 @@ const ACCESS_TAB  = 'Access';
 // ════════════════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
   if (!CFG.clientId || !CFG.sheetId) {
-    showScreen('screen-app');
-    document.getElementById('config-section').classList.remove('hidden');
+    // First-time setup — show config form, not login screen
     document.getElementById('cfg-client-id').value = CFG.clientId;
     document.getElementById('cfg-sheet-id').value  = CFG.sheetId;
+    showScreen('screen-setup');
+  } else {
+    // Config exists — show login screen
+    showScreen('screen-login');
   }
-  // Login screen is shown by default — user clicks the button to start OAuth
 });
 
 // ════════════════════════════════════════════════════════════════
@@ -699,14 +744,17 @@ window.addEventListener('DOMContentLoaded', () => {
 function saveConfig() {
   const clientId = document.getElementById('cfg-client-id').value.trim();
   const sheetId  = document.getElementById('cfg-sheet-id').value.trim();
-  if (!clientId || !sheetId) {
-    showToast('error', 'Please fill in both the Spreadsheet ID and the OAuth Client ID.');
+  if (!clientId) {
+    alert('Please enter your OAuth Client ID.');
+    return;
+  }
+  if (!sheetId) {
+    alert('Please enter your Spreadsheet ID.');
     return;
   }
   CFG.clientId = clientId;
   CFG.sheetId  = sheetId;
-  document.getElementById('config-section').classList.add('hidden');
-  showToast('success', 'Configuration saved. You can now sign in.');
+  showScreen('screen-login');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -714,9 +762,7 @@ function saveConfig() {
 // ════════════════════════════════════════════════════════════════
 function signIn() {
   if (!CFG.clientId || !CFG.sheetId) {
-    showScreen('screen-app');
-    document.getElementById('config-section').classList.remove('hidden');
-    showToast('warn', 'Please complete the one-time setup first.');
+    showScreen('screen-setup');
     return;
   }
 
@@ -1082,13 +1128,16 @@ function goToStep(n) {
 // SCREEN MANAGEMENT
 // ════════════════════════════════════════════════════════════════
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = '';
+  });
   const el = document.getElementById(id);
   if (el) {
     el.classList.add('active');
-    // login/denied screens use flex centering
-    if (id === 'screen-login' || id === 'screen-denied') {
-      el.style.display = 'flex';
+    // These screens are full-height flex containers
+    if (['screen-login', 'screen-denied', 'screen-setup'].includes(id)) {
+      el.style.display = 'block';
     }
   }
 }
