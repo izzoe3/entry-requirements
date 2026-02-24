@@ -1,1198 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Entry Requirements Manager</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg:      #f4f6f9;
-  --surface: #ffffff;
-  --navy:    #1a2744;
-  --navy2:   #253460;
-  --accent:  #3b6fff;
-  --success: #16a34a;
-  --danger:  #dc2626;
-  --warn:    #d97706;
-  --text:    #1a2744;
-  --muted:   #64748b;
-  --border:  #e2e8f0;
-  --radius:  12px;
-  --shadow:  0 2px 16px rgba(26,39,68,0.08);
-}
-
-body {
-  font-family: 'Sora', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-}
-
-/* ── Topbar ───────────────────────────────────────────────── */
-.topbar {
-  background: var(--navy);
-  height: 60px;
-  padding: 0 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
-}
-
-.topbar-brand {
-  display: flex; align-items: center; gap: 10px;
-  color: #fff; font-size: 15px; font-weight: 600;
-}
-
-.topbar-logo {
-  width: 28px; height: 28px;
-  background: var(--accent);
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-}
-
-.topbar-logo svg { width: 14px; height: 14px; fill: #fff; }
-
-.topbar-user {
-  display: flex; align-items: center; gap: 10px;
-}
-
-.user-avatar {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: #fff;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-.user-name { font-size: 13px; color: rgba(255,255,255,0.8); }
-
-.btn-signout {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.7);
-  font-family: 'Sora', sans-serif;
-  font-size: 12px; font-weight: 500;
-  padding: 5px 12px; border-radius: 6px;
-  cursor: pointer; transition: background 0.15s;
-}
-
-.btn-signout:hover { background: rgba(255,255,255,0.18); color: #fff; }
-
-/* ── Main ─────────────────────────────────────────────────── */
-.main {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 36px 24px 80px;
-}
-
-/* ── Screens ──────────────────────────────────────────────── */
-.screen { display: none; }
-.screen.active { display: block; }
-
-/* ── Login screen ─────────────────────────────────────────── */
-#screen-login {
-  display: flex; align-items: center; justify-content: center;
-  min-height: calc(100vh - 60px);
-}
-
-.login-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  padding: 48px 40px;
-  text-align: center;
-  max-width: 420px;
-  width: 100%;
-}
-
-.login-icon {
-  width: 64px; height: 64px;
-  background: #eff4ff;
-  border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 24px;
-}
-
-.login-icon svg { width: 32px; height: 32px; }
-
-.login-title {
-  font-size: 22px; font-weight: 700;
-  color: var(--navy); margin-bottom: 8px;
-}
-
-.login-sub {
-  font-size: 14px; color: var(--muted);
-  line-height: 1.6; margin-bottom: 32px;
-}
-
-.btn-google {
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-  width: 100%; padding: 13px 24px;
-  background: #fff;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-family: 'Sora', sans-serif;
-  font-size: 14px; font-weight: 600;
-  color: var(--text);
-  cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-
-.btn-google:hover {
-  border-color: var(--accent);
-  box-shadow: 0 4px 16px rgba(59,111,255,0.12);
-  transform: translateY(-1px);
-}
-
-.btn-google:active { transform: scale(0.98); }
-
-.btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
-
-.login-note {
-  font-size: 12px; color: var(--muted);
-  margin-top: 20px; line-height: 1.5;
-}
-
-/* ── Access denied screen ─────────────────────────────────── */
-#screen-denied {
-  display: flex; align-items: center; justify-content: center;
-  min-height: calc(100vh - 60px);
-}
-
-.denied-card {
-  background: var(--surface);
-  border: 1px solid #fecaca;
-  border-radius: 20px;
-  padding: 48px 40px;
-  text-align: center;
-  max-width: 440px;
-  width: 100%;
-}
-
-.denied-icon {
-  font-size: 48px; margin-bottom: 20px;
-}
-
-.denied-title {
-  font-size: 20px; font-weight: 700;
-  color: var(--danger); margin-bottom: 10px;
-}
-
-.denied-sub {
-  font-size: 14px; color: var(--muted);
-  line-height: 1.6; margin-bottom: 24px;
-}
-
-.denied-email {
-  display: inline-block;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 6px;
-  padding: 4px 12px;
-  font-size: 13px; font-weight: 600;
-  color: var(--danger);
-  margin-bottom: 24px;
-}
-
-/* ── Steps ────────────────────────────────────────────────── */
-.steps {
-  display: flex; align-items: center;
-  margin-bottom: 28px;
-}
-
-.step {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 13px; font-weight: 500; color: var(--muted);
-}
-
-.step.active { color: var(--accent); }
-.step.done   { color: var(--success); }
-
-.step-num {
-  width: 24px; height: 24px; border-radius: 50%;
-  background: var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: var(--muted);
-  flex-shrink: 0;
-}
-
-.step.active .step-num { background: var(--accent); color: #fff; }
-.step.done   .step-num { background: var(--success); color: #fff; }
-.step-line { flex: 1; height: 1px; background: var(--border); margin: 0 12px; }
-
-/* ── Cards ────────────────────────────────────────────────── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 32px;
-  margin-bottom: 20px;
-}
-
-.card-title   { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
-.card-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
-
-/* ── Programme list ───────────────────────────────────────── */
-.prog-list { display: grid; gap: 10px; }
-
-.prog-card {
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px 20px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, transform 0.1s;
-}
-
-.prog-card:hover { border-color: var(--accent); background: #f0f4ff; transform: translateY(-1px); }
-.prog-card.selected { border-color: var(--accent); background: #eff4ff; }
-
-.prog-icon {
-  width: 40px; height: 40px;
-  background: #eff4ff; border-radius: 9px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-
-.prog-icon svg { width: 20px; height: 20px; fill: var(--accent); }
-.prog-card.selected .prog-icon { background: var(--accent); }
-.prog-card.selected .prog-icon svg { fill: #fff; }
-
-.prog-name { font-size: 14px; font-weight: 600; }
-.prog-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-/* ── Qual grid ────────────────────────────────────────────── */
-.qual-grid { display: grid; gap: 14px; }
-
-.qual-item {
-  border: 1.5px solid var(--border);
-  border-radius: 10px; overflow: hidden;
-  transition: border-color 0.2s;
-}
-
-.qual-item:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,111,255,0.07); }
-.qual-item.has-value    { border-color: #86efac; }
-
-.qual-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 11px 16px;
-  background: rgba(26,39,68,0.025);
-  border-bottom: 1.5px solid var(--border);
-  cursor: pointer; user-select: none;
-}
-
-.qual-item.has-value .qual-header { background: rgba(22,163,74,0.05); border-bottom-color: #bbf7d0; }
-
-.qual-name {
-  font-size: 13px; font-weight: 600; color: var(--navy);
-  display: flex; align-items: center; gap: 8px;
-}
-
-.qual-badge {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.4px;
-  text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
-}
-
-.qual-badge.filled { background: #dcfce7; color: var(--success); }
-.qual-badge.empty  { background: #f1f5f9; color: var(--muted); }
-
-.qual-body { background: #fff; }
-
-.qual-body textarea {
-  width: 100%; padding: 12px 16px;
-  border: none; outline: none; resize: vertical;
-  font-family: 'Sora', sans-serif; font-size: 13.5px;
-  color: var(--text); background: transparent;
-  min-height: 64px; line-height: 1.6;
-}
-
-.qual-body textarea::placeholder { color: #94a3b8; font-style: italic; }
-
-/* ── Section header ───────────────────────────────────────── */
-.section-hdr {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.section-title { font-size: 15px; font-weight: 700; color: var(--navy); }
-.section-meta  { font-size: 12px; color: var(--muted); }
-
-/* ── Buttons ──────────────────────────────────────────────── */
-.btn-row {
-  display: flex; gap: 10px;
-  align-items: center; justify-content: flex-end;
-  padding-top: 4px;
-}
-
-.btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 11px 22px; border-radius: 8px;
-  font-family: 'Sora', sans-serif;
-  font-size: 14px; font-weight: 600;
-  cursor: pointer; border: none;
-  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-  white-space: nowrap;
-}
-
-.btn:active { transform: scale(0.98); }
-
-.btn-primary {
-  background: var(--accent); color: #fff;
-  box-shadow: 0 2px 10px rgba(59,111,255,0.25);
-}
-
-.btn-primary:hover   { background: #2d5fe8; }
-.btn-primary:disabled { background: #94a3b8; box-shadow: none; cursor: not-allowed; transform: none; }
-
-.btn-success { background: var(--success); color: #fff; }
-.btn-success:hover { background: #15803d; }
-
-.btn-ghost {
-  background: transparent; color: var(--muted);
-  border: 1.5px solid var(--border);
-}
-
-.btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
-
-.btn-sm { padding: 8px 16px; font-size: 13px; }
-
-/* ── Toast ────────────────────────────────────────────────── */
-.toast {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 14px 18px; border-radius: 8px;
-  font-size: 13.5px; line-height: 1.5;
-  margin-bottom: 20px;
-  animation: fadeDown 0.25s ease;
-}
-
-@keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.toast.info    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-.toast.success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-.toast.error   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-.toast.warn    { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
-
-/* ── Spinner ──────────────────────────────────────────────── */
-.spinner {
-  width: 14px; height: 14px; flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.65s linear infinite;
-}
-
-.spinner.dark {
-  border-color: var(--border);
-  border-top-color: var(--accent);
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── Skeleton ─────────────────────────────────────────────── */
-.skeleton {
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.2s infinite;
-  border-radius: 8px; height: 64px;
-}
-
-@keyframes shimmer {
-  from { background-position: 200% 0; }
-  to   { background-position: -200% 0; }
-}
-
-/* ── Output table ─────────────────────────────────────────── */
-#preview-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-
-#preview-table th, #preview-table td {
-  border: 1px solid #d1d5db;
-  padding: 10px 14px; text-align: left; vertical-align: top; line-height: 1.5;
-}
-
-#preview-table thead th {
-  background: #f8fafc; font-weight: 700;
-  font-size: 13px; color: var(--navy);
-}
-
-#preview-table tbody td:first-child { font-weight: 700; width: 30%; }
-
-/* ── Config section ───────────────────────────────────────── */
-.config-section {
-  background: var(--navy); border-radius: var(--radius);
-  padding: 28px 32px; margin-bottom: 24px;
-  animation: fadeDown 0.2s ease;
-}
-
-.config-section .config-title {
-  font-size: 14px; font-weight: 700; color: #fff;
-  margin-bottom: 18px;
-}
-
-.config-section label {
-  display: block; font-size: 11px; font-weight: 600;
-  letter-spacing: 0.5px; text-transform: uppercase;
-  color: rgba(255,255,255,0.45); margin-bottom: 7px;
-}
-
-.config-section input {
-  width: 100%; padding: 10px 14px;
-  background: rgba(255,255,255,0.07);
-  border: 1.5px solid rgba(255,255,255,0.12);
-  border-radius: 8px; outline: none;
-  font-family: 'Sora', sans-serif; font-size: 13px; color: #fff;
-  transition: border-color 0.2s;
-  margin-bottom: 14px;
-}
-
-.config-section input:focus { border-color: var(--accent); background: rgba(255,255,255,0.1); }
-.config-section input::placeholder { color: rgba(255,255,255,0.25); }
-
-.config-hint {
-  font-size: 12px; color: rgba(255,255,255,0.35);
-  margin-top: -10px; margin-bottom: 14px; line-height: 1.5;
-}
-
-/* ── Utilities ────────────────────────────────────────────── */
-.hidden  { display: none !important; }
-.mt-16   { margin-top: 16px; }
-.mt-20   { margin-top: 20px; }
-
-@media (max-width: 600px) {
-  .main { padding: 20px 16px 60px; }
-  .card { padding: 20px; }
-  .topbar { padding: 0 16px; }
-  .steps { display: none; }
-  .login-card, .denied-card { padding: 32px 24px; }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entry Requirements Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<!-- ── TOP BAR ──────────────────────────────────────────────── -->
-<div class="topbar">
-  <div class="topbar-brand">
-    <div class="topbar-logo">
-      <svg viewBox="0 0 16 16"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/></svg>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo">
+        <svg viewBox="0 0 16 16" fill="white"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/></svg>
+      </div>
+      Entry Requirements Manager
     </div>
-    Entry Requirements Manager
-  </div>
-  <div class="topbar-user hidden" id="topbar-user">
-    <div class="user-avatar" id="user-avatar"></div>
-    <span class="user-name" id="user-name-display"></span>
-    <button class="btn-signout" onclick="signOut()">Sign out</button>
-  </div>
-</div>
+    <div class="topbar-user" id="topbar-user">
+      <div class="user-avatar" id="user-avatar"></div>
+      <span class="user-name" id="user-name-display"></span>
+      <button class="btn-signout" onclick="App.signOut()">Sign out</button>
+    </div>
+  </header>
 
-<!-- ── SCREENS ───────────────────────────────────────────────── -->
+  <!-- ═══════════════════════════════════════════
+       SCREEN: SETUP (first time only)
+  ════════════════════════════════════════════ -->
+  <div id="screen-setup" class="screen">
+    <div class="centered-wrap">
+      <div class="auth-card">
+        <div class="auth-icon" style="background:#eff4ff;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="3" stroke="#3b6fff" stroke-width="1.8"/>
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+              stroke="#3b6fff" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
 
-<!-- SETUP -->
-<div id="screen-setup" class="screen">
-  <div style="display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 60px); padding:24px;">
-    <div style="background:#fff; border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); padding:48px 40px; max-width:500px; width:100%;">
+        <h1 class="auth-title">First-time Setup</h1>
+        <p class="auth-sub">Connect this app to your Google Sheet. You only need to do this once — settings are saved in your browser.</p>
 
-      <div style="width:56px;height:56px;background:#eff4ff;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="3" stroke="#3b6fff" stroke-width="1.8"/>
-          <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#3b6fff" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
+        <div class="field">
+          <label>Spreadsheet ID</label>
+          <input type="text" id="cfg-sheet-id" placeholder="/spreadsheets/d/ ➜ THIS PART ➜ /edit" />
+          <div class="field-hint">Open your Google Sheet → look at the URL → copy the long ID between <code>/d/</code> and <code>/edit</code></div>
+        </div>
+
+        <div class="field">
+          <label>Google OAuth Client ID</label>
+          <input type="text" id="cfg-client-id" placeholder="xxxxxxxxxxxx.apps.googleusercontent.com" />
+          <div class="field-hint">Google Cloud Console → APIs &amp; Services → Credentials → your OAuth 2.0 Client ID</div>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="App.saveConfig()">
+          Save &amp; Continue to Sign In →
+        </button>
+
+        <p class="auth-note">Need help? Refer to the README for step-by-step instructions.</p>
       </div>
+    </div>
+  </div>
 
-      <div style="font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px;">First-time Setup</div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:32px;">
-        Connect this app to your Google Sheet. You only need to do this once — settings are saved in your browser.
+  <!-- ═══════════════════════════════════════════
+       SCREEN: LOGIN
+  ════════════════════════════════════════════ -->
+  <div id="screen-login" class="screen">
+    <div class="centered-wrap">
+      <div class="auth-card">
+        <div class="auth-icon">
+          <svg viewBox="0 0 48 48" width="32" height="32">
+            <path d="M44 20H24v8.8h11.5C34.1 32.8 29.5 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6.2-6.2C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-8.9 20-20 0-1.3-.1-2.7-.4-4h.4z" fill="#4285F4"/>
+            <path d="M6.3 14.7l7.2 5.3C15.3 16.8 19.3 14 24 14c3 0 5.7 1.1 7.8 2.9l6.2-6.2C34.6 6 29.6 4 24 4 16.3 4 9.7 8.4 6.3 14.7z" fill="#EA4335"/>
+            <path d="M24 44c5.4 0 10.3-1.8 14.1-4.9l-6.5-5.5C29.6 35.4 26.9 36 24 36c-5.4 0-10-3.2-11.5-7.8l-7.2 5.6C8.7 40.1 15.9 44 24 44z" fill="#34A853"/>
+            <path d="M44 20h-.4c.3 1.3.4 2.7.4 4 0 11.1-8.9 20-20 20-8.1 0-15.3-4-19.3-10.1l7.3-5.7C13.5 32.3 18.4 36 24 36c5.5 0 10.1-3.2 11.5-7.2H24V20h20z" fill="#FBBC05"/>
+          </svg>
+        </div>
+
+        <h1 class="auth-title">Sign in to continue</h1>
+        <p class="auth-sub">Use your university Google account. Access is restricted to authorised staff only.</p>
+
+        <button class="btn-google" onclick="App.signIn()">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Sign in with Google
+        </button>
+
+        <p class="auth-note">Only pre-approved university staff can access this tool.</p>
+        <button class="link-btn" onclick="App.showScreen('screen-setup')">⚙ Change connection settings</button>
       </div>
+    </div>
+  </div>
 
-      <div style="margin-bottom:20px;">
-        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">
-          Spreadsheet ID
-        </label>
-        <input type="text" id="cfg-sheet-id"
-          placeholder="Found in your Sheet URL: /spreadsheets/d/THIS_PART/edit"
-          style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);outline:none;" />
-        <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">
-          Open your Google Sheet → look at the URL bar → copy the long ID between <code>/d/</code> and <code>/edit</code>
+  <!-- ═══════════════════════════════════════════
+       SCREEN: ACCESS DENIED
+  ════════════════════════════════════════════ -->
+  <div id="screen-denied" class="screen">
+    <div class="centered-wrap">
+      <div class="auth-card">
+        <div class="denied-icon">🔒</div>
+        <h1 class="auth-title" style="color:var(--danger);">Access Denied</h1>
+        <p class="auth-sub">You are signed in as:</p>
+        <div class="denied-email" id="denied-email"></div>
+        <p class="auth-sub">This account is not on the approved access list. Please contact your administrator to request access.</p>
+        <button class="btn btn-ghost btn-sm" onclick="App.signOut()">← Try a different account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SCREEN: APP (main tool)
+  ════════════════════════════════════════════ -->
+  <div id="screen-app" class="screen">
+    <div class="main">
+
+      <!-- Global toast -->
+      <div id="toast" class="toast" role="alert"></div>
+
+      <!-- ── STEP 1: Select programme ───────────────────── -->
+      <div id="step-select" class="step-panel">
+        <div class="steps-indicator">
+          <div class="step-ind active"><div class="step-num">1</div><span>Choose Programme</span></div>
+          <div class="step-line"></div>
+          <div class="step-ind"><div class="step-num">2</div><span>Edit Requirements</span></div>
+          <div class="step-line"></div>
+          <div class="step-ind"><div class="step-num">3</div><span>Generate Table</span></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Which programme are you updating?</h2>
+          <p class="card-subtitle">Select a programme to load and edit its current entry requirements.</p>
+          <div class="prog-list" id="prog-list"></div>
         </div>
       </div>
 
-      <div style="margin-bottom:28px;">
-        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">
-          Google OAuth Client ID
-        </label>
-        <input type="text" id="cfg-client-id"
-          placeholder="xxxxxxxxxx.apps.googleusercontent.com"
-          style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);outline:none;" />
-        <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">
-          From Google Cloud Console → APIs &amp; Services → Credentials → your OAuth 2.0 Client ID
+      <!-- ── STEP 2: Edit requirements ──────────────────── -->
+      <div id="step-edit" class="step-panel">
+        <div class="steps-indicator">
+          <div class="step-ind done"><div class="step-num">✓</div><span>Choose Programme</span></div>
+          <div class="step-line"></div>
+          <div class="step-ind active"><div class="step-num">2</div><span>Edit Requirements</span></div>
+          <div class="step-line"></div>
+          <div class="step-ind"><div class="step-num">3</div><span>Generate Table</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header-row">
+            <div>
+              <h2 class="card-title" id="edit-prog-name"></h2>
+              <p class="card-subtitle" style="margin-bottom:0;">
+                Fill in accepted qualifications. Leave a field <strong>blank</strong> if that qualification does not apply — it won't appear in the published table.
+              </p>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="App.goToStep(1)">← Change</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-hdr">
+            <div class="section-title">Entry Requirements</div>
+            <div class="section-meta" id="filled-count"></div>
+          </div>
+          <div class="qual-grid" id="qual-grid"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="App.goToStep(1)">← Back</button>
+          <button class="btn btn-primary" id="save-btn" onclick="App.saveRequirements()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7l3.5 3.5L12 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Save &amp; Generate Table
+          </button>
         </div>
       </div>
 
-      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveConfig()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Save &amp; Continue to Sign In
-      </button>
+      <!-- ── STEP 3: Output ─────────────────────────────── -->
+      <div id="step-output" class="step-panel">
+        <div class="steps-indicator">
+          <div class="step-ind done"><div class="step-num">✓</div><span>Choose Programme</span></div>
+          <div class="step-line"></div>
+          <div class="step-ind done"><div class="step-num">✓</div><span>Edit Requirements</span></div>
+          <div class="step-line"></div>
+          <div class="step-ind active"><div class="step-num">3</div><span>Generate Table</span></div>
+        </div>
 
-      <div style="font-size:12px;color:var(--muted);margin-top:16px;text-align:center;line-height:1.5;">
-        Need help? Refer to the README file for step-by-step instructions.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- LOGIN -->
-<div id="screen-login" class="screen">
-  <div class="login-card">
-    <div class="login-icon">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M44 20H24v8.8h11.5C34.1 32.8 29.5 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6.2-6.2C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-8.9 20-20 0-1.3-.1-2.7-.4-4h.4z" fill="#4285F4"/>
-        <path d="M6.3 14.7l7.2 5.3C15.3 16.8 19.3 14 24 14c3 0 5.7 1.1 7.8 2.9l6.2-6.2C34.6 6 29.6 4 24 4 16.3 4 9.7 8.4 6.3 14.7z" fill="#EA4335"/>
-        <path d="M24 44c5.4 0 10.3-1.8 14.1-4.9l-6.5-5.5C29.6 35.4 26.9 36 24 36c-5.4 0-10-3.2-11.5-7.8l-7.2 5.6C8.7 40.1 15.9 44 24 44z" fill="#34A853"/>
-        <path d="M44 20h-.4c.3 1.3.4 2.7.4 4 0 11.1-8.9 20-20 20-8.1 0-15.3-4-19.3-10.1l7.3-5.7C13.5 32.3 18.4 36 24 36c5.5 0 10.1-3.2 11.5-7.2H24V20h20z" fill="#FBBC05"/>
-      </svg>
-    </div>
-    <div class="login-title">Sign in to continue</div>
-    <div class="login-sub">Use your university Google account to access the Entry Requirements Manager. Access is restricted to authorised staff only.</div>
-    <button class="btn-google" onclick="signIn()">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
-      Sign in with Google
-    </button>
-    <div class="login-note">Only pre-approved university staff can access this tool. Contact your administrator if you need access.</div>
-    <div style="margin-top:14px;">
-      <button onclick="showScreen('screen-setup')" style="background:none;border:none;font-family:'Sora',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;">⚙ Change connection settings</button>
-    </div>
-  </div>
-</div>
-
-<!-- ACCESS DENIED -->
-<div id="screen-denied" class="screen">
-  <div class="denied-card">
-    <div class="denied-icon">🔒</div>
-    <div class="denied-title">Access Denied</div>
-    <div class="denied-sub">You are signed in as:</div>
-    <div class="denied-email" id="denied-email"></div>
-    <div class="denied-sub">This account is not on the approved access list. Please contact your administrator to request access.</div>
-    <button class="btn btn-ghost btn-sm" onclick="signOut()">← Sign in with a different account</button>
-  </div>
-</div>
-
-<!-- MAIN APP -->
-<div id="screen-app" class="screen">
-  <div class="main">
-
-    <!-- Toast -->
-    <div id="toast" class="toast hidden"></div>
-
-    <!-- ── STEP 1: Select programme ──────────────────────── -->
-    <div id="step-select" class="hidden">
-      <div class="steps">
-        <div class="step active"><div class="step-num">1</div> Choose Programme</div>
-        <div class="step-line"></div>
-        <div class="step"><div class="step-num">2</div> Edit Requirements</div>
-        <div class="step-line"></div>
-        <div class="step"><div class="step-num">3</div> Generate Table</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Which programme are you updating?</div>
-        <div class="card-subtitle">Select a programme to load and edit its current entry requirements.</div>
-        <div class="prog-list" id="prog-list"></div>
-      </div>
-    </div>
-
-    <!-- ── STEP 2: Edit requirements ─────────────────────── -->
-    <div id="step-edit" class="hidden">
-      <div class="steps">
-        <div class="step done"><div class="step-num">✓</div> Choose Programme</div>
-        <div class="step-line"></div>
-        <div class="step active"><div class="step-num">2</div> Edit Requirements</div>
-        <div class="step-line"></div>
-        <div class="step"><div class="step-num">3</div> Generate Table</div>
-      </div>
-
-      <div class="card">
-        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:0;">
-          <div>
-            <div class="card-title" id="edit-prog-name"></div>
-            <div class="card-subtitle" style="margin-bottom:0;">
-              Fill in accepted qualifications. Leave a field <strong>blank</strong> if that qualification does not apply — it will be hidden from the published table.
+        <div class="card">
+          <div class="output-header">
+            <div>
+              <h2 class="card-title">Table Ready ✓</h2>
+              <p class="output-sub">Saved to Google Sheets. Copy and paste into WordPress, Google Docs, or Word.</p>
+            </div>
+            <div class="output-actions">
+              <button class="btn btn-ghost btn-sm" onclick="App.goToStep(2)">← Edit</button>
+              <button class="btn btn-success btn-sm" id="copy-btn" onclick="App.copyTable(this)">Copy Table</button>
             </div>
           </div>
-          <button class="btn btn-ghost btn-sm" onclick="goToStep(1)" style="flex-shrink:0; margin-top:4px;">← Change</button>
-        </div>
-      </div>
 
-      <div class="card">
-        <div class="section-hdr">
-          <div class="section-title">Entry Requirements</div>
-          <div class="section-meta" id="filled-count"></div>
-        </div>
-        <div class="qual-grid" id="qual-grid"></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
-        <button class="btn btn-primary" id="save-btn" onclick="saveRequirements()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Save &amp; Generate Table
-        </button>
-      </div>
-    </div>
-
-    <!-- ── STEP 3: Output ─────────────────────────────────── -->
-    <div id="step-output" class="hidden">
-      <div class="steps">
-        <div class="step done"><div class="step-num">✓</div> Choose Programme</div>
-        <div class="step-line"></div>
-        <div class="step done"><div class="step-num">✓</div> Edit Requirements</div>
-        <div class="step-line"></div>
-        <div class="step active"><div class="step-num">3</div> Generate Table</div>
-      </div>
-
-      <div class="card">
-        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
-          <div>
-            <div class="card-title" style="margin-bottom:2px;">Table Ready ✓</div>
-            <div style="font-size:13px; color:var(--muted);">Saved to Google Sheets. Copy and paste directly into WordPress, Google Docs, or Word.</div>
+          <div id="table-wrapper">
+            <table id="preview-table" border="1" cellpadding="8" cellspacing="0">
+              <thead>
+                <tr><th>Qualification</th><th>Requirements</th></tr>
+              </thead>
+              <tbody id="output-tbody"></tbody>
+            </table>
           </div>
-          <div style="display:flex; gap:8px; flex-shrink:0;">
-            <button class="btn btn-ghost btn-sm" onclick="goToStep(2)">← Edit</button>
-            <button class="btn btn-success btn-sm" id="copy-btn" onclick="copyTable(this)">Copy Table</button>
+
+          <div class="output-footer">
+            <button class="btn btn-primary btn-sm" onclick="App.goToStep(1)">Edit Another Programme</button>
+            <span id="copy-confirm" class="copy-confirm">✓ Copied! Paste anywhere.</span>
           </div>
         </div>
-
-        <div id="table-wrapper">
-          <table id="preview-table" border="1" cellpadding="8" cellspacing="0">
-            <thead><tr><th>Qualification</th><th>Requirements</th></tr></thead>
-            <tbody id="output-tbody"></tbody>
-          </table>
-        </div>
-
-        <div class="mt-20" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-          <button class="btn btn-primary btn-sm" onclick="goToStep(1)">Edit Another Programme</button>
-          <span id="copy-confirm" class="hidden" style="font-size:13px; color:var(--success); font-weight:600;">✓ Copied! Paste anywhere.</span>
-        </div>
       </div>
-    </div>
 
-  </div><!-- /main -->
-</div><!-- /screen-app -->
+    </div><!-- /main -->
+  </div><!-- /screen-app -->
 
-<!-- Google Identity Services (synchronous load for reliability) -->
-<script src="https://accounts.google.com/gsi/client"></script>
-
-<script>
-// ════════════════════════════════════════════════════════════════
-// CONFIG — stored in localStorage, entered once
-// ════════════════════════════════════════════════════════════════
-const CFG = {
-  get clientId()  { return localStorage.getItem('cfg_client_id')  || ''; },
-  get sheetId()   { return localStorage.getItem('cfg_sheet_id')   || ''; },
-  set clientId(v) { localStorage.setItem('cfg_client_id', v); },
-  set sheetId(v)  { localStorage.setItem('cfg_sheet_id',  v); },
-};
-
-// Runtime state
-let accessToken  = null;
-let userEmail    = null;
-let userName     = null;
-let userPicture  = null;
-let allHeaders   = [];   // ["Programme Name", "SPM / O-Level", ...]
-let qualHeaders  = [];   // headers minus col 0
-let allData      = [];   // array of row objects
-let currentProg  = null;
-let currentRowIdx = null;
-const SHEET_NAME  = 'Entry Requirements';
-const ACCESS_TAB  = 'Access';
-
-// ════════════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  if (!CFG.clientId || !CFG.sheetId) {
-    // First-time setup — show config form, not login screen
-    document.getElementById('cfg-client-id').value = CFG.clientId;
-    document.getElementById('cfg-sheet-id').value  = CFG.sheetId;
-    showScreen('screen-setup');
-  } else {
-    // Config exists — show login screen
-    showScreen('screen-login');
-  }
-});
-
-// ════════════════════════════════════════════════════════════════
-// CONFIG SAVE
-// ════════════════════════════════════════════════════════════════
-function saveConfig() {
-  const clientId = document.getElementById('cfg-client-id').value.trim();
-  const sheetId  = document.getElementById('cfg-sheet-id').value.trim();
-  if (!clientId) {
-    alert('Please enter your OAuth Client ID.');
-    return;
-  }
-  if (!sheetId) {
-    alert('Please enter your Spreadsheet ID.');
-    return;
-  }
-  CFG.clientId = clientId;
-  CFG.sheetId  = sheetId;
-  showScreen('screen-login');
-}
-
-// ════════════════════════════════════════════════════════════════
-// AUTH — lazy token client, created fresh on each sign-in click
-// ════════════════════════════════════════════════════════════════
-function signIn() {
-  if (!CFG.clientId || !CFG.sheetId) {
-    showScreen('screen-setup');
-    return;
-  }
-
-  if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
-    showToast('error', 'Google sign-in library not loaded. Check your internet connection and reload the page.');
-    return;
-  }
-
-  try {
-    const tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CFG.clientId,
-      scope: [
-        'https://www.googleapis.com/auth/spreadsheets',
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email',
-      ].join(' '),
-      callback: onTokenResponse,
-      error_callback: (err) => {
-        showToast('error', 'Sign-in error: ' + (err.message || err.type || JSON.stringify(err)));
-      },
-    });
-
-    tokenClient.requestAccessToken({ prompt: 'select_account' });
-  } catch (err) {
-    showToast('error', 'Could not open sign-in popup: ' + err.message + '. Make sure popups are allowed for this page.');
-  }
-}
-
-async function onTokenResponse(tokenResponse) {
-  if (tokenResponse.error) {
-    showToast('error', 'Sign-in failed: ' + tokenResponse.error + (tokenResponse.error_description ? ' — ' + tokenResponse.error_description : ''));
-    return;
-  }
-
-  accessToken = tokenResponse.access_token;
-
-  // Fetch user profile with the token
-  try {
-    const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-      headers: { Authorization: 'Bearer ' + accessToken }
-    });
-    if (!res.ok) throw new Error('Profile fetch failed: HTTP ' + res.status);
-    const profile = await res.json();
-    userEmail   = profile.email;
-    userName    = profile.name;
-    userPicture = profile.picture;
-  } catch (e) {
-    showToast('error', 'Signed in but could not fetch your profile: ' + e.message);
-    return;
-  }
-
-  await checkAccess();
-}
-
-// ════════════════════════════════════════════════════════════════
-// ACCESS CHECK — reads the "Access" tab in the sheet
-// ════════════════════════════════════════════════════════════════
-async function checkAccess() {
-  try {
-    const range = encodeURIComponent(ACCESS_TAB + '!A:A');
-    const url   = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${range}`;
-    const res   = await apiFetch(url);
-    const data  = await res.json();
-
-    const allowedEmails = (data.values || [])
-      .flat()
-      .map(e => String(e).trim().toLowerCase())
-      .filter(e => e.includes('@'));
-
-    if (allowedEmails.includes(userEmail.toLowerCase())) {
-      onAccessGranted();
-    } else {
-      onAccessDenied();
-    }
-  } catch (err) {
-    // If tab doesn't exist yet, show setup hint
-    showToast('error', 'Could not read access list: ' + err.message + '. Make sure the "Access" tab exists in your sheet.');
-    showScreen('screen-login');
-  }
-}
-
-function onAccessGranted() {
-  // Update topbar
-  const avatar = document.getElementById('user-avatar');
-  if (userPicture) {
-    avatar.innerHTML = '<img src="' + userPicture + '" alt="">';
-  } else {
-    avatar.textContent = (userName || userEmail).charAt(0).toUpperCase();
-  }
-  document.getElementById('user-name-display').textContent = userName || userEmail;
-  document.getElementById('topbar-user').classList.remove('hidden');
-
-  showScreen('screen-app');
-  document.getElementById('step-select').classList.remove('hidden');
-  loadSheetData();
-}
-
-function onAccessDenied() {
-  document.getElementById('denied-email').textContent = userEmail;
-  showScreen('screen-denied');
-}
-
-function signOut() {
-  accessToken = null;
-  userEmail   = null;
-  userName    = null;
-  document.getElementById('topbar-user').classList.add('hidden');
-  // Hide all app steps
-  ['step-select','step-edit','step-output'].forEach(id =>
-    document.getElementById(id).classList.add('hidden')
-  );
-  showScreen('screen-login');
-  // Revoke token
-  if (window.google && google.accounts && google.accounts.id) {
-    google.accounts.id.disableAutoSelect();
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
-// SHEETS DATA LOAD
-// ════════════════════════════════════════════════════════════════
-async function loadSheetData() {
-  renderProgListSkeleton();
-  try {
-    const range = encodeURIComponent(SHEET_NAME + '!A1:ZZ');
-    const url   = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${range}`;
-    const res   = await apiFetch(url);
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error?.message || 'HTTP ' + res.status);
-    }
-    const data = await res.json();
-    const rows = data.values || [];
-
-    if (rows.length < 2) {
-      renderProgListMsg('No programmes found. Make sure the "' + SHEET_NAME + '" tab has a header row and at least one data row.');
-      return;
-    }
-
-    allHeaders  = rows[0].map(h => String(h).trim());
-    qualHeaders = allHeaders.slice(1);
-    allData     = rows.slice(1)
-      .filter(r => String(r[0] || '').trim() !== '')
-      .map(row => {
-        const obj = {};
-        allHeaders.forEach((h, i) => { obj[h] = String(row[i] || '').trim(); });
-        return obj;
-      });
-
-    renderProgList();
-  } catch (err) {
-    renderProgListMsg('Failed to load data: ' + err.message);
-    showToast('error', '<strong>Could not load sheet data.</strong> ' + err.message);
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
-// STEP 1 — Programme list
-// ════════════════════════════════════════════════════════════════
-function renderProgListSkeleton() {
-  document.getElementById('prog-list').innerHTML =
-    [1,2,3,4].map(() => '<div class="skeleton"></div>').join('');
-}
-
-function renderProgListMsg(msg) {
-  document.getElementById('prog-list').innerHTML =
-    '<div style="padding:24px 0; text-align:center; font-size:13px; color:var(--muted);">' + msg + '</div>';
-}
-
-function renderProgList() {
-  const progKey = allHeaders[0];
-  const total   = qualHeaders.length;
-  document.getElementById('prog-list').innerHTML = allData.map((prog, i) => {
-    const name   = prog[progKey] || '(Unnamed)';
-    const filled = qualHeaders.filter(h => prog[h] && prog[h].trim()).length;
-    return '<div class="prog-card" onclick="selectProgramme(' + i + ')" data-idx="' + i + '">' +
-      '<div class="prog-icon">' +
-        '<svg viewBox="0 0 20 20"><path d="M4 3h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 7h8M6 10h8M6 13h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' +
-      '</div>' +
-      '<div>' +
-        '<div class="prog-name">' + escHtml(name) + '</div>' +
-        '<div class="prog-meta">' + filled + ' of ' + total + ' qualifications filled</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-// ════════════════════════════════════════════════════════════════
-// STEP 2 — Edit
-// ════════════════════════════════════════════════════════════════
-function selectProgramme(idx) {
-  currentProg    = allData[idx][allHeaders[0]];
-  currentRowIdx  = idx;
-
-  document.querySelectorAll('.prog-card').forEach(c => c.classList.remove('selected'));
-  const card = document.querySelector('.prog-card[data-idx="' + idx + '"]');
-  if (card) card.classList.add('selected');
-
-  setTimeout(() => {
-    goToStep(2);
-    document.getElementById('edit-prog-name').textContent = currentProg;
-    renderQualGrid(allData[idx]);
-  }, 100);
-}
-
-function renderQualGrid(prog) {
-  document.getElementById('qual-grid').innerHTML = qualHeaders.map((header, i) => {
-    const val    = prog[header] || '';
-    const filled = val.trim() !== '';
-    return '<div class="qual-item' + (filled ? ' has-value' : '') + '" id="qi-' + i + '">' +
-      '<div class="qual-header" onclick="document.getElementById(\'qa-' + i + '\').focus()">' +
-        '<div class="qual-name">' + escHtml(header) +
-          '<span class="qual-badge ' + (filled ? 'filled' : 'empty') + '" id="qb-' + i + '">' +
-            (filled ? 'Filled' : 'Empty') +
-          '</span>' +
-        '</div>' +
-      '</div>' +
-      '<div class="qual-body">' +
-        '<textarea id="qa-' + i + '" placeholder="Leave blank if not accepted for this programme…" oninput="onQualInput(' + i + ', this)">' +
-          escHtml(val) +
-        '</textarea>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-  updateFilledCount();
-}
-
-function onQualInput(i, el) {
-  const filled = el.value.trim() !== '';
-  document.getElementById('qi-' + i).classList.toggle('has-value', filled);
-  const badge = document.getElementById('qb-' + i);
-  badge.className  = 'qual-badge ' + (filled ? 'filled' : 'empty');
-  badge.textContent = filled ? 'Filled' : 'Empty';
-  updateFilledCount();
-}
-
-function updateFilledCount() {
-  const filled = document.querySelectorAll('.qual-item.has-value').length;
-  document.getElementById('filled-count').textContent = filled + ' of ' + qualHeaders.length + ' filled';
-}
-
-// ════════════════════════════════════════════════════════════════
-// SAVE TO SHEETS
-// ════════════════════════════════════════════════════════════════
-async function saveRequirements() {
-  // Gather current field values
-  const fields = {};
-  qualHeaders.forEach((h, i) => {
-    fields[h] = (document.getElementById('qa-' + i)?.value || '').trim();
-  });
-
-  // Build the full row in header order
-  const newRow = allHeaders.map((h, i) => i === 0 ? currentProg : (fields[h] || ''));
-
-  // Find the actual sheet row (data starts at row 2, +1 for 1-based index)
-  const sheetRow = currentRowIdx + 2;
-  const range    = encodeURIComponent(SHEET_NAME + '!A' + sheetRow + ':' + colLetter(allHeaders.length - 1) + sheetRow);
-  const url      = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${range}?valueInputOption=RAW`;
-
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Saving…';
-
-  try {
-    const res = await apiFetch(url, {
-      method: 'PUT',
-      body: JSON.stringify({ range: decodeURIComponent(range), majorDimension: 'ROWS', values: [newRow] }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error?.message || 'HTTP ' + res.status);
-    }
-
-    // Update local cache
-    allHeaders.forEach((h, i) => { allData[currentRowIdx][h] = newRow[i]; });
-
-    buildOutputTable(fields);
-    goToStep(3);
-    showToast('success', '"' + currentProg + '" saved to Google Sheets successfully.');
-
-  } catch (err) {
-    showToast('error', '<strong>Save failed:</strong> ' + err.message);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Save &amp; Generate Table';
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
-// STEP 3 — Output table
-// ════════════════════════════════════════════════════════════════
-function buildOutputTable(fields) {
-  const tbody = document.getElementById('output-tbody');
-  tbody.innerHTML = '';
-  qualHeaders.forEach(h => {
-    const req = fields[h] || '';
-    if (!req.trim()) return;
-    const tr  = document.createElement('tr');
-    const td1 = document.createElement('td');
-    const s   = document.createElement('strong');
-    s.textContent = h;
-    td1.appendChild(s);
-    const td2 = document.createElement('td');
-    td2.textContent = req;
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tbody.appendChild(tr);
-  });
-  document.getElementById('copy-confirm').classList.add('hidden');
-}
-
-function copyTable(btn) {
-  const rows = document.querySelectorAll('#output-tbody tr');
-  let tableRows = '';
-  rows.forEach(row => {
-    const qual = row.cells[0].querySelector('strong').textContent;
-    const req  = row.cells[1].textContent;
-    tableRows += '<tr><td><strong>' + qual + '</strong></td><td>' + req + '</td></tr>';
-  });
-
-  const cleanHTML =
-    '<h3>' + currentProg + '</h3>' +
-    '<table border="1" cellpadding="8" cellspacing="0">' +
-    '<thead><tr><th>Qualification</th><th>Requirements</th></tr></thead>' +
-    '<tbody>' + tableRows + '</tbody></table>';
-
-  const plainText = currentProg + '\n\nQualification\tRequirements\n' +
-    Array.from(rows).map(r =>
-      r.cells[0].textContent.trim() + '\t' + r.cells[1].textContent.trim()
-    ).join('\n');
-
-  navigator.clipboard.write([
-    new ClipboardItem({
-      'text/html':  new Blob([cleanHTML],  { type: 'text/html' }),
-      'text/plain': new Blob([plainText], { type: 'text/plain' }),
-    })
-  ]).then(() => {
-    document.getElementById('copy-confirm').classList.remove('hidden');
-    btn.textContent = '✓ Copied!';
-    btn.style.background = '#15803d';
-    setTimeout(() => { btn.textContent = 'Copy Table'; btn.style.background = ''; }, 2500);
-  }).catch(() => alert('Copy failed — please select the table manually and copy.'));
-}
-
-// ════════════════════════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════════════════════════
-function goToStep(n) {
-  ['step-select','step-edit','step-output'].forEach((id, i) => {
-    document.getElementById(id).classList.toggle('hidden', i + 1 !== n);
-  });
-  if (n === 1) {
-    renderProgList();
-    currentProg    = null;
-    currentRowIdx  = null;
-    hideToast();
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ════════════════════════════════════════════════════════════════
-// SCREEN MANAGEMENT
-// ════════════════════════════════════════════════════════════════
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.remove('active');
-    s.style.display = '';
-  });
-  const el = document.getElementById(id);
-  if (el) {
-    el.classList.add('active');
-    // These screens are full-height flex containers
-    if (['screen-login', 'screen-denied', 'screen-setup'].includes(id)) {
-      el.style.display = 'block';
-    }
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
-// API HELPER
-// ════════════════════════════════════════════════════════════════
-function apiFetch(url, opts = {}) {
-  return fetch(url, {
-    ...opts,
-    headers: {
-      'Authorization': 'Bearer ' + accessToken,
-      'Content-Type':  'application/json',
-      ...(opts.headers || {}),
-    },
-  });
-}
-
-// ════════════════════════════════════════════════════════════════
-// TOAST
-// ════════════════════════════════════════════════════════════════
-let _toastTimer = null;
-function showToast(type, html) {
-  const icons = { info: 'ℹ️', success: '✅', error: '❌', warn: '⚠️' };
-  const t = document.getElementById('toast');
-  t.className = 'toast ' + type;
-  t.innerHTML = '<span>' + (icons[type]||'') + '</span><span>' + html + '</span>';
-  t.classList.remove('hidden');
-  if (_toastTimer) clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(hideToast, type === 'error' ? 9000 : 4000);
-}
-function hideToast() { document.getElementById('toast').classList.add('hidden'); }
-
-// ════════════════════════════════════════════════════════════════
-// UTILS
-// ════════════════════════════════════════════════════════════════
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function colLetter(n) {
-  // Convert 0-based column index to A1 letter (A, B, … Z, AA, …)
-  let s = '';
-  n += 1;
-  while (n > 0) {
-    n--;
-    s = String.fromCharCode(65 + (n % 26)) + s;
-    n = Math.floor(n / 26);
-  }
-  return s;
-}
-
-</script>
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <script src="app.js"></script>
 
 </body>
 </html>
