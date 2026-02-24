@@ -24,62 +24,52 @@
     </div>
   </header>
 
-  <!-- ═══════════════════════════════════════════
-       SCREEN: SETUP (first time only)
-  ════════════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════
+       SCREEN: SETUP
+  ═════════════════════════════════════════════ -->
   <div id="screen-setup" class="screen">
     <div class="centered-wrap">
       <div class="auth-card">
         <div class="auth-icon" style="background:#eff4ff;">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="3" stroke="#3b6fff" stroke-width="1.8"/>
-            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-              stroke="#3b6fff" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#3b6fff" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-
         <h1 class="auth-title">First-time Setup</h1>
-        <p class="auth-sub">Connect this app to your Google Sheet. You only need to do this once — settings are saved in your browser.</p>
-
+        <p class="auth-sub">Connect this app to your Google Sheet. Settings are saved in your browser — you only do this once.</p>
         <div class="field">
           <label>Spreadsheet ID</label>
           <input type="text" id="cfg-sheet-id" placeholder="/spreadsheets/d/ ➜ THIS PART ➜ /edit" />
           <div class="field-hint">Open your Google Sheet → look at the URL → copy the long ID between <code>/d/</code> and <code>/edit</code></div>
         </div>
-
         <div class="field">
           <label>Google OAuth Client ID</label>
           <input type="text" id="cfg-client-id" placeholder="xxxxxxxxxxxx.apps.googleusercontent.com" />
-          <div class="field-hint">Google Cloud Console → APIs &amp; Services → Credentials → your OAuth 2.0 Client ID</div>
+          <div class="field-hint">Google Cloud Console → APIs &amp; Services → Credentials → OAuth 2.0 Client ID</div>
         </div>
-
-        <button class="btn btn-primary btn-full" onclick="App.saveConfig()">
-          Save &amp; Continue to Sign In →
-        </button>
-
+        <button class="btn btn-primary btn-full" onclick="App.saveConfig()">Save &amp; Continue to Sign In →</button>
         <p class="auth-note">Need help? Refer to the README for step-by-step instructions.</p>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
        SCREEN: LOGIN
-  ════════════════════════════════════════════ -->
+  ═════════════════════════════════════════════ -->
   <div id="screen-login" class="screen">
     <div class="centered-wrap">
       <div class="auth-card">
         <div class="auth-icon">
-          <svg viewBox="0 0 48 48" width="32" height="32">
+          <svg viewBox="0 0 48 48" width="34" height="34">
             <path d="M44 20H24v8.8h11.5C34.1 32.8 29.5 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6.2-6.2C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-8.9 20-20 0-1.3-.1-2.7-.4-4h.4z" fill="#4285F4"/>
             <path d="M6.3 14.7l7.2 5.3C15.3 16.8 19.3 14 24 14c3 0 5.7 1.1 7.8 2.9l6.2-6.2C34.6 6 29.6 4 24 4 16.3 4 9.7 8.4 6.3 14.7z" fill="#EA4335"/>
             <path d="M24 44c5.4 0 10.3-1.8 14.1-4.9l-6.5-5.5C29.6 35.4 26.9 36 24 36c-5.4 0-10-3.2-11.5-7.8l-7.2 5.6C8.7 40.1 15.9 44 24 44z" fill="#34A853"/>
             <path d="M44 20h-.4c.3 1.3.4 2.7.4 4 0 11.1-8.9 20-20 20-8.1 0-15.3-4-19.3-10.1l7.3-5.7C13.5 32.3 18.4 36 24 36c5.5 0 10.1-3.2 11.5-7.2H24V20h20z" fill="#FBBC05"/>
           </svg>
         </div>
-
         <h1 class="auth-title">Sign in to continue</h1>
         <p class="auth-sub">Use your university Google account. Access is restricted to authorised staff only.</p>
-
         <button class="btn-google" onclick="App.signIn()">
           <svg viewBox="0 0 24 24" width="20" height="20">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -89,16 +79,15 @@
           </svg>
           Sign in with Google
         </button>
-
         <p class="auth-note">Only pre-approved university staff can access this tool.</p>
         <button class="link-btn" onclick="App.showScreen('screen-setup')">⚙ Change connection settings</button>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
        SCREEN: ACCESS DENIED
-  ════════════════════════════════════════════ -->
+  ═════════════════════════════════════════════ -->
   <div id="screen-denied" class="screen">
     <div class="centered-wrap">
       <div class="auth-card">
@@ -106,58 +95,103 @@
         <h1 class="auth-title" style="color:var(--danger);">Access Denied</h1>
         <p class="auth-sub">You are signed in as:</p>
         <div class="denied-email" id="denied-email"></div>
-        <p class="auth-sub">This account is not on the approved access list. Please contact your administrator to request access.</p>
+        <p class="auth-sub">This account is not on the approved access list. Contact your administrator to request access.</p>
         <button class="btn btn-ghost btn-sm" onclick="App.signOut()">← Try a different account</button>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       SCREEN: APP (main tool)
-  ════════════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════
+       SCREEN: APP
+  ═════════════════════════════════════════════ -->
   <div id="screen-app" class="screen">
     <div class="main">
 
-      <!-- Global toast -->
       <div id="toast" class="toast" role="alert"></div>
 
-      <!-- ── STEP 1: Select programme ───────────────────── -->
+      <!-- ── STEP 1: Programme list ────────────────────── -->
       <div id="step-select" class="step-panel">
-        <div class="steps-indicator">
-          <div class="step-ind active"><div class="step-num">1</div><span>Choose Programme</span></div>
-          <div class="step-line"></div>
-          <div class="step-ind"><div class="step-num">2</div><span>Edit Requirements</span></div>
-          <div class="step-line"></div>
-          <div class="step-ind"><div class="step-num">3</div><span>Generate Table</span></div>
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Programmes</h2>
+            <p class="page-sub">Search and select a programme to view or edit its entry requirements.</p>
+          </div>
+        </div>
+
+        <div class="search-wrap">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <input
+              type="text"
+              id="prog-search"
+              placeholder="Search programmes…"
+              oninput="App.filterProgList(this.value)"
+              autocomplete="off"
+            />
+            <button class="search-clear hidden" id="search-clear" onclick="App.clearSearch()">✕</button>
+          </div>
+        </div>
+
+        <div class="prog-list" id="prog-list"></div>
+        <div id="prog-empty" class="prog-empty hidden">No programmes match your search.</div>
+      </div>
+
+      <!-- ── STEP 2: View requirements ─────────────────── -->
+      <div id="step-view" class="step-panel">
+        <div class="step-topbar">
+          <button class="back-btn" onclick="App.goToStep(1)">
+            <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            All Programmes
+          </button>
+          <div class="step-topbar-actions">
+            <button class="btn btn-ghost btn-sm" onclick="App.goToEdit()">
+              <svg viewBox="0 0 14 14" fill="none" width="12" height="12">
+                <path d="M9.5 1.5l3 3-7 7H2.5v-3l7-7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+              </svg>
+              Edit All Fields
+            </button>
+            <button class="btn btn-success btn-sm" id="view-copy-btn" onclick="App.copyTableFromView(this)">Copy Table</button>
+          </div>
         </div>
 
         <div class="card">
-          <h2 class="card-title">Which programme are you updating?</h2>
-          <p class="card-subtitle">Select a programme to load and edit its current entry requirements.</p>
-          <div class="prog-list" id="prog-list"></div>
+          <div class="view-header">
+            <div>
+              <h2 class="card-title" id="view-prog-name"></h2>
+              <p class="view-meta" id="view-meta"></p>
+            </div>
+          </div>
+          <div id="view-table-wrap"></div>
+          <div class="copy-bar">
+            <span id="view-copy-confirm" class="copy-confirm">✓ Copied! Paste into Google Docs, Word, or WordPress.</span>
+          </div>
         </div>
       </div>
 
-      <!-- ── STEP 2: Edit requirements ──────────────────── -->
+      <!-- ── STEP 3: Edit requirements ─────────────────── -->
       <div id="step-edit" class="step-panel">
-        <div class="steps-indicator">
-          <div class="step-ind done"><div class="step-num">✓</div><span>Choose Programme</span></div>
-          <div class="step-line"></div>
-          <div class="step-ind active"><div class="step-num">2</div><span>Edit Requirements</span></div>
-          <div class="step-line"></div>
-          <div class="step-ind"><div class="step-num">3</div><span>Generate Table</span></div>
+        <div class="step-topbar">
+          <button class="back-btn" onclick="App.goToStep(1)">
+            <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            All Programmes
+          </button>
+          <div class="step-topbar-actions">
+            <button class="btn btn-ghost btn-sm" onclick="App.goToView()">View Current</button>
+          </div>
         </div>
 
         <div class="card">
-          <div class="card-header-row">
-            <div>
-              <h2 class="card-title" id="edit-prog-name"></h2>
-              <p class="card-subtitle" style="margin-bottom:0;">
-                Fill in accepted qualifications. Leave a field <strong>blank</strong> if that qualification does not apply — it won't appear in the published table.
-              </p>
-            </div>
-            <button class="btn btn-ghost btn-sm" onclick="App.goToStep(1)">← Change</button>
-          </div>
+          <h2 class="card-title" id="edit-prog-name"></h2>
+          <p class="card-subtitle" style="margin-bottom:0;">
+            Fill in accepted qualifications. Leave a field <strong>blank</strong> if it does not apply — it won't appear in the published table.
+          </p>
         </div>
 
         <div class="card">
@@ -171,48 +205,49 @@
         <div class="btn-row">
           <button class="btn btn-ghost" onclick="App.goToStep(1)">← Back</button>
           <button class="btn btn-primary" id="save-btn" onclick="App.saveRequirements()">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7l3.5 3.5L12 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M2 7l3 3 6-6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             Save &amp; Generate Table
           </button>
         </div>
       </div>
 
-      <!-- ── STEP 3: Output ─────────────────────────────── -->
+      <!-- ── STEP 4: Output ─────────────────────────────── -->
       <div id="step-output" class="step-panel">
-        <div class="steps-indicator">
-          <div class="step-ind done"><div class="step-num">✓</div><span>Choose Programme</span></div>
-          <div class="step-line"></div>
-          <div class="step-ind done"><div class="step-num">✓</div><span>Edit Requirements</span></div>
-          <div class="step-line"></div>
-          <div class="step-ind active"><div class="step-num">3</div><span>Generate Table</span></div>
+        <div class="step-topbar">
+          <button class="back-btn" onclick="App.goToStep(1)">
+            <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            All Programmes
+          </button>
+          <div class="step-topbar-actions">
+            <button class="btn btn-ghost btn-sm" onclick="App.goToEdit()">← Edit</button>
+            <button class="btn btn-success btn-sm" id="copy-btn" onclick="App.copyTable(this)">Copy Table</button>
+          </div>
         </div>
 
         <div class="card">
-          <div class="output-header">
-            <div>
-              <h2 class="card-title">Table Ready ✓</h2>
-              <p class="output-sub">Saved to Google Sheets. Copy and paste into WordPress, Google Docs, or Word.</p>
-            </div>
-            <div class="output-actions">
-              <button class="btn btn-ghost btn-sm" onclick="App.goToStep(2)">← Edit</button>
-              <button class="btn btn-success btn-sm" id="copy-btn" onclick="App.copyTable(this)">Copy Table</button>
-            </div>
+          <div class="output-saved-badge">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1.5 6.5l3 3 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Saved to Google Sheets
           </div>
+          <h2 class="card-title" id="output-prog-name" style="margin-bottom:4px;"></h2>
+          <p class="card-subtitle">Copy and paste the table below into WordPress, Google Docs, or Word.</p>
 
           <div id="table-wrapper">
             <table id="preview-table" border="1" cellpadding="8" cellspacing="0">
-              <thead>
-                <tr><th>Qualification</th><th>Requirements</th></tr>
-              </thead>
+              <thead><tr><th>Qualification</th><th>Requirements</th></tr></thead>
               <tbody id="output-tbody"></tbody>
             </table>
           </div>
 
           <div class="output-footer">
             <button class="btn btn-primary btn-sm" onclick="App.goToStep(1)">Edit Another Programme</button>
-            <span id="copy-confirm" class="copy-confirm">✓ Copied! Paste anywhere.</span>
+            <span id="copy-confirm" class="copy-confirm">✓ Copied!</span>
           </div>
         </div>
       </div>
@@ -220,9 +255,39 @@
     </div><!-- /main -->
   </div><!-- /screen-app -->
 
-  <!-- Google Identity Services -->
+  <!-- ══════════════════════════════════════════
+       INLINE EDIT MODAL
+  ═════════════════════════════════════════════ -->
+  <div id="modal-overlay" class="modal-overlay"></div>
+  <div id="inline-modal" class="inline-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <div class="modal-prog-name" id="modal-prog-label"></div>
+        <div class="modal-title" id="modal-qual-name"></div>
+      </div>
+      <button class="modal-close" onclick="App.closeInlineEdit()" aria-label="Close">
+        <svg viewBox="0 0 14 14" fill="none" width="14" height="14">
+          <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label class="modal-label">Entry Requirement</label>
+      <textarea id="modal-textarea" placeholder="Leave blank if this qualification is not accepted for this programme…"></textarea>
+      <p class="modal-hint">Tip: Leave blank to remove this qualification from the published table.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="App.closeInlineEdit()">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="modal-save-btn" onclick="App.saveInlineEdit()">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M1.5 6.5l3 3 6-6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Save Change
+      </button>
+    </div>
+  </div>
+
   <script src="https://accounts.google.com/gsi/client"></script>
   <script src="app.js"></script>
-
 </body>
 </html>
