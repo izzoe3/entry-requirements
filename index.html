@@ -17,10 +17,19 @@
       </div>
       Entry Requirements Manager
     </div>
-    <div class="topbar-user" id="topbar-user">
-      <div class="user-avatar" id="user-avatar"></div>
-      <span class="user-name" id="user-name-display"></span>
-      <button class="btn-signout" onclick="App.signOut()">Sign out</button>
+    <div class="topbar-right">
+      <button class="topbar-changelog-btn hidden" id="topbar-changelog-btn" onclick="App.openChangelog()">
+        <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 4.5v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Changelog
+      </button>
+      <div class="topbar-user" id="topbar-user">
+        <div class="user-avatar" id="user-avatar"></div>
+        <span class="user-name" id="user-name-display"></span>
+        <button class="btn-signout" onclick="App.signOut()">Sign out</button>
+      </div>
     </div>
   </header>
 
@@ -124,13 +133,8 @@
               <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/>
               <path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
             </svg>
-            <input
-              type="text"
-              id="prog-search"
-              placeholder="Search programmes…"
-              oninput="App.filterProgList(this.value)"
-              autocomplete="off"
-            />
+            <input type="text" id="prog-search" placeholder="Search programmes…"
+              oninput="App.filterProgList(this.value)" autocomplete="off" />
             <button class="search-clear hidden" id="search-clear" onclick="App.clearSearch()">✕</button>
           </div>
         </div>
@@ -151,7 +155,7 @@
           <div class="step-topbar-actions">
             <button class="btn btn-ghost btn-sm" onclick="App.goToEdit()">
               <svg viewBox="0 0 14 14" fill="none" width="12" height="12">
-                <path d="M9.5 1.5l3 3-7 7H2.5v-3l7-7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M9.5 1.5l3 3-7.5 7.5H2.5v-3l7-7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
               </svg>
               Edit All Fields
             </button>
@@ -169,6 +173,23 @@
           <div id="view-table-wrap"></div>
           <div class="copy-bar">
             <span id="view-copy-confirm" class="copy-confirm">✓ Copied! Paste into Google Docs, Word, or WordPress.</span>
+          </div>
+        </div>
+
+        <!-- Programme history -->
+        <div class="card" id="view-history-card">
+          <div class="section-hdr">
+            <div class="section-title">
+              <svg viewBox="0 0 16 16" fill="none" width="14" height="14" style="vertical-align:-2px;margin-right:6px;">
+                <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/>
+                <path d="M8 4.5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+              Change History
+            </div>
+            <div class="section-meta" id="view-history-meta"></div>
+          </div>
+          <div id="view-history-wrap">
+            <div class="history-loading">Loading history…</div>
           </div>
         </div>
       </div>
@@ -237,18 +258,54 @@
           </div>
           <h2 class="card-title" id="output-prog-name" style="margin-bottom:4px;"></h2>
           <p class="card-subtitle">Copy and paste the table below into WordPress, Google Docs, or Word.</p>
-
           <div id="table-wrapper">
             <table id="preview-table" border="1" cellpadding="8" cellspacing="0">
               <thead><tr><th>Qualification</th><th>Requirements</th></tr></thead>
               <tbody id="output-tbody"></tbody>
             </table>
           </div>
-
           <div class="output-footer">
             <button class="btn btn-primary btn-sm" onclick="App.goToStep(1)">Edit Another Programme</button>
             <span id="copy-confirm" class="copy-confirm">✓ Copied!</span>
           </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 5: Changelog ──────────────────────────── -->
+      <div id="step-changelog" class="step-panel">
+        <div class="step-topbar">
+          <button class="back-btn" onclick="App.goToStep(1)">
+            <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            All Programmes
+          </button>
+        </div>
+
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Changelog</h2>
+            <p class="page-sub">Every change made to entry requirements, newest first.</p>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="changelog-filters">
+          <div class="search-box" style="flex:1;">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <input type="text" id="cl-search" placeholder="Filter by programme, qualification, or user…"
+              oninput="App.filterChangelog()" autocomplete="off" />
+          </div>
+          <select id="cl-prog-filter" class="filter-select" onchange="App.filterChangelog()">
+            <option value="">All programmes</option>
+          </select>
+        </div>
+
+        <div id="changelog-wrap">
+          <div class="history-loading">Loading changelog…</div>
         </div>
       </div>
 
@@ -262,7 +319,7 @@
   <div id="inline-modal" class="inline-modal" role="dialog" aria-modal="true">
     <div class="modal-header">
       <div>
-        <div class="modal-prog-name" id="modal-prog-label"></div>
+        <div class="modal-prog-label" id="modal-prog-label"></div>
         <div class="modal-title" id="modal-qual-name"></div>
       </div>
       <button class="modal-close" onclick="App.closeInlineEdit()" aria-label="Close">
@@ -273,8 +330,8 @@
     </div>
     <div class="modal-body">
       <label class="modal-label">Entry Requirement</label>
-      <textarea id="modal-textarea" placeholder="Leave blank if this qualification is not accepted for this programme…"></textarea>
-      <p class="modal-hint">Tip: Leave blank to remove this qualification from the published table.</p>
+      <textarea id="modal-textarea" placeholder="Leave blank to remove this qualification from the published table…"></textarea>
+      <p class="modal-hint">Leave blank to remove this qualification from the published table.</p>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost btn-sm" onclick="App.closeInlineEdit()">Cancel</button>
